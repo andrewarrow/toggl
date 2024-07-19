@@ -1,8 +1,8 @@
 use clap::{Arg, Command};
 use clap::{Parser, Subcommand};
 use std::env;
-use std::time::Duration as StdDuration;
 use tokio::time::{sleep, Duration};
+mod tasks;
 
 #[tokio::main]
 async fn main() {
@@ -18,5 +18,7 @@ async fn main() {
         )
         .get_matches();
 
+    println!("hi");
+    tasks::fetch_tasks().await
     println!("hi");
 }
