@@ -35,6 +35,7 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
                 .or_insert_with(Vec::new)
                 .push(task);
         }
+
         Ok(tasks_by_project)
     } else {
         eprintln!("Request failed with status: {}", response.status());
