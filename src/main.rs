@@ -14,9 +14,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Arg::new("DESC")
                 .help("what you did")
                 .required(true)
-                .index(1),
+                .long("desc")
+                .value_parser(clap::value_parser!(String)),
         )
-        .arg(Arg::new("TASK").help("which task?").required(true).index(2))
+        .arg(
+            Arg::new("TASK")
+                .help("which task?")
+                .required(true)
+                .long("task")
+                .value_parser(clap::value_parser!(String)),
+        )
         .get_matches();
 
     let query = matches.get_one::<String>("TASK").expect("TASK is required");
