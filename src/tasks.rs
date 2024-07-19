@@ -9,11 +9,6 @@ struct Task {
     project_id: Option<u64>,
 }
 
-#[derive(Deserialize, Debug)]
-struct TasksResponse {
-    data: Vec<Task>,
-}
-
 pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
     let toggl_cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE environment variable not set");
 
@@ -26,8 +21,8 @@ pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     if response.status().is_success() {
-        let tasks_response: TasksResponse = response.json().await?;
-        println!("{:#?}", tasks_response);
+        let tasks: Vec<Task> = response.json().await?;
+        println!("{:#?}", tasks);
     } else {
         eprintln!("Request failed with status: {}", response.status());
     }
