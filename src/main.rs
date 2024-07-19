@@ -19,6 +19,6 @@ async fn main() {
         .get_matches();
 
     println!("hi");
-    tasks::fetch_tasks().await
+    tasks::fetch_tasks().await;
     println!("hi");
 }
