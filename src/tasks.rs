@@ -1,5 +1,18 @@
 use reqwest::header::{CONTENT_TYPE, COOKIE};
+use serde::Deserialize;
 use std::env;
+
+#[derive(Deserialize, Debug)]
+struct Task {
+    id: u64,
+    name: String,
+    project_id: Option<u64>,
+}
+
+#[derive(Deserialize, Debug)]
+struct TasksResponse {
+    data: Vec<Task>,
+}
 
 pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
     let toggl_cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE environment variable not set");
@@ -13,8 +26,8 @@ pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     if response.status().is_success() {
-        let text = response.text().await?;
-        println!("{}", text);
+        let tasks_response: TasksResponse = response.json().await?;
+        println!("{:#?}", tasks_response);
     } else {
         eprintln!("Request failed with status: {}", response.status());
     }
