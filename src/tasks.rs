@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::env;
 
 #[derive(Deserialize, Debug)]
-struct Task {
+pub struct Task {
     id: u64,
     name: String,
     workspace_id: u64,
@@ -45,7 +45,10 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
     }
 }
 
-pub fn search_tasks(tasks_by_project: &HashMap<String, Vec<Task>>, query: &str) -> Vec<&Task> {
+pub fn search_tasks<'a>(
+    tasks_by_project: &'a HashMap<String, Vec<Task>>,
+    query: &str,
+) -> Vec<&'a Task> {
     let mut results = Vec::new();
     for (project_name, tasks) in tasks_by_project {
         if project_name.contains(query) {

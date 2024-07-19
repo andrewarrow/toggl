@@ -5,7 +5,7 @@ use tokio::time::{sleep, Duration};
 mod tasks;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("Toggl CLI")
         .version("1.0")
         .author("Andrew Arrow <aa@andrewarrow.dev>")
@@ -27,4 +27,6 @@ async fn main() {
     for task in search_results {
         println!("{:#?}", task);
     }
+
+    Ok(())
 }
