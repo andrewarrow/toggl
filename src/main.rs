@@ -16,9 +16,15 @@ async fn main() {
                 .required(true)
                 .index(1),
         )
+        .arg(Arg::new("TASK").help("which task?").required(true).index(2))
         .get_matches();
 
-    println!("hi");
-    tasks::fetch_tasks().await;
-    println!("hi");
+    let query = matches.get_one::<String>("TASK").expect("TASK is required");
+    let tasks_by_project = tasks::fetch_tasks().await?;
+
+    let search_results = tasks::search_tasks(&tasks_by_project, query);
+
+    for task in search_results {
+        println!("{:#?}", task);
+    }
 }

@@ -1,15 +1,19 @@
 use reqwest::header::{CONTENT_TYPE, COOKIE};
 use serde::Deserialize;
+use std::collections::HashMap;
 use std::env;
 
 #[derive(Deserialize, Debug)]
 struct Task {
     id: u64,
     name: String,
-    project_id: Option<u64>,
+    workspace_id: u64,
+    project_id: u64,
+    project_name: String,
+    client_name: String,
 }
 
-pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::error::Error>> {
     let toggl_cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE environment variable not set");
 
     let client = reqwest::Client::new();
@@ -21,11 +25,32 @@ pub async fn fetch_tasks() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     if response.status().is_success() {
+        let mut tasks_by_project: HashMap<String, Vec<Task>> = HashMap::new();
+
         let tasks: Vec<Task> = response.json().await?;
-        println!("{:#?}", tasks);
+
+        for task in tasks {
+            tasks_by_project
+                .entry(task.project_name.clone())
+                .or_insert_with(Vec::new)
+                .push(task);
+        }
+        Ok(tasks_by_project)
     } else {
         eprintln!("Request failed with status: {}", response.status());
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Request failed",
+        )))
     }
+}
 
-    Ok(())
+pub fn search_tasks(tasks_by_project: &HashMap<String, Vec<Task>>, query: &str) -> Vec<&Task> {
+    let mut results = Vec::new();
+    for (project_name, tasks) in tasks_by_project {
+        if project_name.contains(query) {
+            results.extend(tasks);
+        }
+    }
+    results
 }
