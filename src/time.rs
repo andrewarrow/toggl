@@ -1,18 +1,11 @@
-//use serde::{Deserialize, Serialize};
 use serde::Serialize;
-//use serde_json::json;
+use serde_json::Value;
 use std::env;
 use std::error::Error;
-//use std::str::FromStr;
 use std::fs;
-//use std::fs::File;
-//use std::io::Read;
-//use std::path::Path;
-use serde_json::Value;
-//use std::collections::HashMap;
 //use super::tasks;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 struct TimeData {
     created_with: String,
     pid: u64,
@@ -31,7 +24,7 @@ struct TimeData {
     project_billable: bool,
 }
 
-pub async fn post_request() -> reqwest::Result<reqwest::Response> {
+pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Response> {
     let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
     let tid: u64 = taskIdStr.parse().unwrap();
 
@@ -80,8 +73,8 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         created_with: "Snowball".to_string(),
         pid: pid,
         tid: tid,
-        start: "2024-07-18T16:00:00.000Z".to_string(),
-        stop: "2024-07-19T00:00:00.000Z".to_string(),
+        start: t1.to_string(),
+        stop: t2.to_string(),
         wid: wid,
         duration: 3600,
         description: "coding".to_string(),
@@ -94,8 +87,11 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         project_billable: false,
     };
 
+    println!("{:#?}", post_data);
+
     let client = reqwest::Client::new();
-    let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
+    //let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
+    let url = "http://localhost:3000";
 
     let cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE must be set");
     let mut headers = reqwest::header::HeaderMap::new();

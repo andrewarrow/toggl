@@ -78,12 +78,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         println!("{}", formatted_date);
 
-        let new_hour = (native_datetime.hour() + 8) % 24;
+        let new_hour = (native_datetime.hour() + 1) % 24;
         let new_time = native_datetime
             .with_hour(new_hour)
             .unwrap_or_else(|| panic!("Invalid hour after adding 8 hours!"));
+        let datetime_utc2 = DateTime::<Utc>::from_utc(new_time, Utc);
+        let formatted_date2 = datetime_utc2.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
-        let res = time::post_request().await;
+        let res = time::post_request(formatted_date, formatted_date2).await;
         println!("Response: {:#?}", res);
 
         println!("{}", new_time);
