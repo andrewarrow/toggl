@@ -72,7 +72,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let offset = FixedOffset::west(8 * 3600); // PST is UTC-8
 
-        let parts: Vec<&str> = input.split_whitespace().collect();
+        let cleaned_input = input.replace(',', "").trim().to_string();
+
+        let parts: Vec<&str> = cleaned_input.split_whitespace().collect();
         if parts.len() < 3 {
             eprintln!("Invalid input format.");
             return Ok(());
