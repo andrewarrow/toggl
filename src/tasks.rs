@@ -3,10 +3,10 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
-use std::io::{self, Write};
+use std::io::Write;
 //use tokio::fs::File;
 //use tokio::io::AsyncWriteExt;
-use std::fs;
+//use std::fs;
 //use std::io;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -90,4 +90,11 @@ async fn write_to_file(filename: &str, content: &str) -> std::io::Result<()> {
         e
     })?;
     Ok(())
+}
+
+async fn read_file(filename: &str) -> std::io::Result<String> {
+    let mut file = File::open(filename);
+    let mut contents = String::new();
+    file.read_to_string(&mut contents);
+    Ok(contents)
 }

@@ -25,30 +25,32 @@ struct TimeData {
 }
 
 pub async fn post_request() -> reqwest::Result<reqwest::Response> {
-    let pidStr = env::var("TOGGLE_PROJECT_ID").expect("TOGGLE_PROJECT_ID must be set");
-    let pid: u64 = pidStr.parse().unwrap();
-
-    let workspaceStr = env::var("TOGGLE_WORKSPACE_ID").expect("TOGGLE_WORKSPACE_ID must be set");
-    let wid: u64 = workspaceStr.parse().unwrap();
-
     let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
     let tid: u64 = taskIdStr.parse().unwrap();
 
+    let content = match task::read_file(format!("data/task{}.json", taskIdStr)).await {
+        Ok(content) => content,
+        Err(e) => String::new(),
+    };
+
+    let m = serde_json::from_str(content);
+    m.get("project_id");
+
     let post_data = TimeData {
         created_with: "Snowball".to_string(),
-        pid: pid,
+        pid: m.get("project_id"),
         tid: tid,
         start: "2024-07-18T16:00:00.000Z".to_string(),
         stop: "2024-07-19T00:00:00.000Z".to_string(),
-        wid: wid,
+        wid: m.get("workspace_id"),
         duration: 3600,
         description: "coding".to_string(),
         billable: false,
         tags: vec![],
-        project_name: "foo Booking App".to_string(),
-        project_color: "#566614".to_string(),
+        project_name: m.get("project_name"),
+        project_color: m.get("project_color"),
         project_active: true,
-        client_name: "foo".to_string(),
+        client_name: m.get("client_name"),
         project_billable: false,
     };
 

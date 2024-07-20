@@ -1,11 +1,7 @@
 use clap::{Arg, Command};
-use clap::{Parser, Subcommand};
-use std::env;
-use tokio::time::{sleep, Duration};
 mod tasks;
 use chrono::NaiveDateTime;
-use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike, Utc};
-use reqwest::Client;
+use chrono::{DateTime, Timelike, Utc};
 mod time;
 
 #[tokio::main]
