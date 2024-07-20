@@ -90,13 +90,26 @@ pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Re
     println!("{:#?}", post_data);
 
     let client = reqwest::Client::new();
-    let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
-    //let url = "http://localhost:3000";
+    //let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
+    let url = "http://localhost:3000";
 
-    let cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE must be set");
+    let cookie = match env::var("TOGGL_COOKIE") {
+        Ok(v) => v,
+        Err(_) => String::new(),
+    };
+    let token = match env::var("TOGGL_TOKEN") {
+        Ok(v) => v,
+        Err(_) => String::new(),
+    };
+
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert("Content-Type", "application/json".parse().unwrap());
-    headers.insert("Cookie", cookie.parse().unwrap());
+    if cookie.is_empty() {
+        let basic = format!("{}:api_token", token);
+        headers.insert("Authorization: Basic", basic.parse().unwrap());
+    } else {
+        headers.insert("Cookie", cookie.parse().unwrap());
+    }
 
     client
         .post(url)
