@@ -50,7 +50,18 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     };
 
     let pid: Option<u64> = m.get("project_id").and_then(|v| v.as_u64());
+    let pid = match pid {
+        Some(id) => id,
+        None => 0,
+    };
     let wid: Option<u64> = m.get("workspace_id").and_then(|v| v.as_u64());
+    let wid = match wid {
+        Some(id) => id,
+        None => 0,
+    };
+    //project_name: m.get("project_name"),
+    //project_color: m.get("project_color"),
+    //client_name: m.get("client_name"),
 
     let post_data = TimeData {
         created_with: "Snowball".to_string(),
