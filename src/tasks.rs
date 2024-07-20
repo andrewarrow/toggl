@@ -3,7 +3,11 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::{self, Write};
+//use tokio::fs::File;
+//use tokio::io::AsyncWriteExt;
+use std::fs;
+//use std::io;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
@@ -34,9 +38,10 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
 
         for task in tasks {
             let serialized_task = serde_json::to_string(&task)?;
-            let filename = format!("./data/task{}.json", task.id);
-            println!("{}", serialized_task);
-            write_to_file(&filename, &serialized_task);
+            let filename = format!("/Users/aa/os/toggl/data/task{}.json", task.id);
+            println!("1");
+            if let Err(e) = write_to_file(&filename, &serialized_task).await {}
+            println!("2");
 
             let t = Task {
                 project_name: format!("{} ({})", task.project_name, task.client_name),
@@ -78,7 +83,13 @@ pub fn search_tasks<'a>(
 }
 
 async fn write_to_file(filename: &str, content: &str) -> std::io::Result<()> {
-    let mut file = File::create(filename)?;
-    file.write_all(content.as_bytes())?;
+    let mut file = File::create(filename).map_err(|e| {
+        eprintln!("Error creating file: {}", e);
+        e
+    })?;
+    file.write_all(content.as_bytes()).map_err(|e| {
+        eprintln!("Error writing to file: {}", e);
+        e
+    })?;
     Ok(())
 }
