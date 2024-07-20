@@ -5,7 +5,8 @@ use tokio::time::{sleep, Duration};
 mod tasks;
 use chrono::NaiveDateTime;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike, Utc};
-use std::str::FromStr;
+use reqwest::Client;
+mod time;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -85,6 +86,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let new_time = native_datetime
             .with_hour(new_hour)
             .unwrap_or_else(|| panic!("Invalid hour after adding 8 hours!"));
+
+        let res = time::post_request().await;
+        println!("Response: {:#?}", res);
+
         println!("{}", new_time);
     }
 
