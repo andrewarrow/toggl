@@ -12,4 +12,13 @@ export TOGGL_COOKIE='_gcl_au=ABC123...'
 
 Replace (inside the single quotes) the `_gcl_au=ABC123...` stuff with your cookie value.
 
+# running
 
+```
+./toggl-cli
+--task=prefix or --desc='desc of what I did'
+
+./toggl-cli --task='project foo'
+
+./toggl-cli --desc='i did a lot for project foo.' --time='Jul 19, 9-5 PST'
+```
