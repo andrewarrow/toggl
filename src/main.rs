@@ -26,7 +26,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .get_matches();
 
-    let query = matches.get_one::<String>("TASK").expect("TASK is required");
+    let queryCap = matches.get_one::<String>("TASK").expect("TASK is required");
+    let query_lower = queryCap.to_lowercase();
+    let query: &str = &query_lower;
+
     let tasks_by_project = tasks::fetch_tasks().await?;
 
     let search_results = tasks::search_tasks(&tasks_by_project, query);
