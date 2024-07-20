@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let default_value = "".to_string();
     let queryCap = queryCap.unwrap_or(default_value);
 
-    let descTxt: Option<String> = matches.get_one("DESK").cloned();
+    let descTxt: Option<String> = matches.get_one("DESC").cloned();
     let default_value = "".to_string();
     let descTxt = descTxt.unwrap_or(default_value);
     if queryCap.trim().is_empty() && descTxt.trim().is_empty() {
