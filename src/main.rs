@@ -26,14 +26,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .get_matches();
 
-    let queryCap = matches.get_one::<String>("TASK");
-    let descTxt = matches.get_one::<String>("DESC");
-    if queryCap.trim().is_empty() == "" && descTxt.trim().is_empty() {
+    let queryCap: Option<String> = matches.get_one("TASK").cloned();
+    let default_value = "".to_string();
+    let queryCap = queryCap.unwrap_or(default_value);
+
+    let descTxt: Option<String> = matches.get_one("DESK").cloned();
+    let default_value = "".to_string();
+    let descTxt = descTxt.unwrap_or(default_value);
+    if queryCap.trim().is_empty() && descTxt.trim().is_empty() {
         println!("--task=prefix or --desc='desc of what I did'");
-        return;
+        return Ok(());
     }
 
-    if queryCap.trim().is_empty() != "" {
+    if queryCap.trim().is_empty() == false {
         let query_lower = queryCap.to_lowercase();
         let query: &str = &query_lower;
 
