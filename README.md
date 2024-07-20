@@ -12,6 +12,14 @@ export TOGGL_COOKIE='_gcl_au=ABC123...'
 
 Replace (inside the single quotes) the `_gcl_au=ABC123...` stuff with your cookie value.
 
+# with api key vs cookie
+
+![apiKey](apiKey.png)
+
+```
+export TOGGL_API_KEY=...
+```
+
 # building
 
 ```

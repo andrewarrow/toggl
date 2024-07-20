@@ -1,4 +1,6 @@
 tasks.json
+env
+t
 orig_*
 Cargo.lock
 target
