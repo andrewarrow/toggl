@@ -23,11 +23,16 @@ struct TimeData {
     project_billable: bool,
 }
 
-pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Response> {
+pub async fn post_request(
+    desc: String,
+    t1: String,
+    t2: String,
+) -> reqwest::Result<reqwest::Response> {
     let task_id_str = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
     let tid: u64 = task_id_str.parse().unwrap();
 
-    let contents = fs::read_to_string(format!("data/task{}.json", task_id_str)).expect("Should have been able to read the file");
+    let contents = fs::read_to_string(format!("data/task{}.json", task_id_str))
+        .expect("Should have been able to read the file");
 
     let result: Result<Value, serde_json::Error> = serde_json::from_str(&contents);
 
@@ -73,7 +78,7 @@ pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Re
         stop: t2.to_string(),
         wid: wid,
         duration: 3600,
-        description: "coding".to_string(),
+        description: desc.to_string(),
         billable: false,
         tags: vec![],
         project_name: project_name.to_string(),

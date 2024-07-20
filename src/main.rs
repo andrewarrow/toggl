@@ -86,7 +86,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let datetime_utc2 = DateTime::<Utc>::from_utc(new_time, Utc);
         let formatted_date2 = datetime_utc2.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
-        let res = time::post_request(formatted_date, formatted_date2).await;
+        let res = time::post_request(descTxt, formatted_date, formatted_date2).await;
         println!("Response: {:#?}", res);
 
         println!("{}", new_time);
