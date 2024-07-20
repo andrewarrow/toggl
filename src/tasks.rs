@@ -30,11 +30,19 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
         let tasks: Vec<Task> = response.json().await?;
 
         for task in tasks {
-            task.project_name = format!("{} ({})", task.project_name, task.client_name);
+            let t = Task {
+                project_name: format!("{} ({})", task.project_name, task.client_name),
+                id: task.id,
+                name: task.name,
+                workspace_id: task.workspace_id,
+                project_id: task.project_id,
+                client_name: task.client_name,
+            };
+
             tasks_by_project
-                .entry(task.project_name.to_lowercase().clone())
+                .entry(t.project_name.to_lowercase().clone())
                 .or_insert_with(Vec::new)
-                .push(task);
+                .push(t);
         }
 
         Ok(tasks_by_project)
