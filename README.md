@@ -23,12 +23,13 @@ cp targets/debug/toggle-cli .
 
 ```
 ./toggl-cli
---task=prefix or --desc='desc of what I did'
+--task=prefix or (--desc='desc of what I did' --time='when')
 
-./toggl-cli --task='project foo'
+./toggl-cli --task='foo'
+(this will search your projects and tasks for the string foo)
 
-export TOGGLE_PROJECT_ID=123
-export TOGGLE_WORKSPACE_ID=123
 export TOGGLE_TASK_ID=123
+(you get 123 from the step before)
+
 ./toggl-cli --desc='i did a lot for project foo.' --time='2024-07-19 16:00'
 ```

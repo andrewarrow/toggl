@@ -90,8 +90,8 @@ pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Re
     println!("{:#?}", post_data);
 
     let client = reqwest::Client::new();
-    //let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
-    let url = "http://localhost:3000";
+    let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
+    //let url = "http://localhost:3000";
 
     let cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE must be set");
     let mut headers = reqwest::header::HeaderMap::new();
