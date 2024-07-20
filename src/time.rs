@@ -1,9 +1,9 @@
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+//use serde::{Deserialize, Serialize};
+use serde::Serialize;
+//use serde_json::json;
 use std::env;
 use std::error::Error;
-use std::str::FromStr;
+//use std::str::FromStr;
 
 #[derive(Serialize)]
 struct TimeData {
@@ -28,10 +28,7 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
     let tid: u64 = taskIdStr.parse().unwrap();
 
-    let content = match task::read_file(format!("data/task{}.json", taskIdStr)).await {
-        Ok(content) => content,
-        Err(e) => String::new(),
-    };
+    let content = tasks::read_file(format!("data/task{}.json", taskIdStr));
 
     let m = serde_json::from_str(content);
     m.get("project_id");

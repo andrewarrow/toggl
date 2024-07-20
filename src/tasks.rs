@@ -8,6 +8,8 @@ use std::io::Write;
 //use tokio::io::AsyncWriteExt;
 //use std::fs;
 //use std::io;
+use std::io::Read;
+use std::path::Path;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
@@ -39,7 +41,7 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
         for task in tasks {
             let serialized_task = serde_json::to_string(&task)?;
             let filename = format!("data/task{}.json", task.id);
-            if let Err(e) = write_to_file(&filename, &serialized_task).await {}
+            if let Err(_e) = write_to_file(&filename, &serialized_task).await {}
 
             let t = Task {
                 project_name: format!("{} ({})", task.project_name, task.client_name),
@@ -93,8 +95,10 @@ async fn write_to_file(filename: &str, content: &str) -> std::io::Result<()> {
 }
 
 async fn read_file(filename: &str) -> std::io::Result<String> {
-    let mut file = File::open(filename);
+    let path = Path::new(filename);
+    let mut file = File::open(path)?;
     let mut contents = String::new();
-    file.read_to_string(&mut contents);
+    file.read_to_string(&mut contents)?;
+
     Ok(contents)
 }
