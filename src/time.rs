@@ -7,12 +7,12 @@ use std::str::FromStr;
 #[derive(Serialize)]
 struct TimeData {
     created_with: String,
-    pid: u32,
-    tid: u32,
+    pid: u64,
+    tid: u64,
     start: String,
     stop: String,
-    wid: u32,
-    duration: u32,
+    wid: u64,
+    duration: u64,
     description: String,
     billable: bool,
     tags: Vec<String>,
@@ -24,13 +24,22 @@ struct TimeData {
 }
 
 pub async fn post_request() -> reqwest::Result<reqwest::Response> {
+    let pidStr = env::var("TOGGLE_PROJECT_ID").expect("TOGGLE_PROJECT_ID must be set");
+    let pid: u64 = pidStr.parse().unwrap();
+
+    let workspaceStr = env::var("TOGGLE_WORKSPACE_ID").expect("TOGGLE_WORKSPACE_ID must be set");
+    let wid: u64 = workspaceStr.parse().unwrap();
+
+    let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
+    let tid: u64 = taskIdStr.parse().unwrap();
+
     let post_data = TimeData {
         created_with: "Snowball".to_string(),
-        pid: 123,
-        tid: 1234,
+        pid: pid,
+        tid: tid,
         start: "2024-07-18T16:00:00.000Z".to_string(),
         stop: "2024-07-19T00:00:00.000Z".to_string(),
-        wid: 7000311,
+        wid: wid,
         duration: 28800,
         description: "ratpack".to_string(),
         billable: false,
