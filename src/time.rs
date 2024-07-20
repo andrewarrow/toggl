@@ -59,7 +59,11 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         Some(id) => id,
         None => 0,
     };
-    //project_name: m.get("project_name"),
+    let project_name: Option<&str> = m.get("project_name").and_then(|v| v.as_str());
+    let project_name = match project_name {
+        Some(id) => id,
+        None => "",
+    };
     //project_color: m.get("project_color"),
     //client_name: m.get("client_name"),
 
@@ -74,7 +78,7 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         description: "coding".to_string(),
         billable: false,
         tags: vec![],
-        project_name: m.get("project_name"),
+        project_name: project_name.to_string(),
         project_color: m.get("project_color"),
         project_active: true,
         client_name: m.get("client_name"),
