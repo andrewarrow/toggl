@@ -3,6 +3,7 @@ use clap::{Parser, Subcommand};
 use std::env;
 use tokio::time::{sleep, Duration};
 mod tasks;
+use chrono::NaiveDate;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike};
 use std::str::FromStr;
 
@@ -67,7 +68,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if timeTxt.trim().is_empty() == false {
         println!("");
 
-        match NaiveDate::parse_from_str(timeTxt, "%Y-%m-%d") {
+        let input_string = timeTxt.to_string();
+        let input: &str = &input_string;
+        match NaiveDate::parse_from_str(input, "%Y-%m-%d") {
             Ok(date) => println!("Parsed date: {}", date),
             Err(e) => eprintln!("Failed to parse date: {}", e),
         }
