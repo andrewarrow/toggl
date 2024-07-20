@@ -20,5 +20,8 @@ Replace (inside the single quotes) the `_gcl_au=ABC123...` stuff with your cooki
 
 ./toggl-cli --task='project foo'
 
+export TOGGLE_PROJECT_ID=123
+export TOGGLE_WORKSPACE_ID=123
+export TOGGLE_TASK_ID=123
 ./toggl-cli --desc='i did a lot for project foo.' --time='Jul 19, 9-5 PST'
 ```
