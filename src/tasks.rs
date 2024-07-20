@@ -8,8 +8,6 @@ use std::io::Write;
 //use tokio::io::AsyncWriteExt;
 //use std::fs;
 //use std::io;
-use std::io::Read;
-use std::path::Path;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
@@ -92,13 +90,4 @@ async fn write_to_file(filename: &str, content: &str) -> std::io::Result<()> {
         e
     })?;
     Ok(())
-}
-
-async fn read_file(filename: &str) -> std::io::Result<String> {
-    let path = Path::new(filename);
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-
-    Ok(contents)
 }

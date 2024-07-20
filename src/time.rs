@@ -4,6 +4,10 @@ use serde::Serialize;
 use std::env;
 use std::error::Error;
 //use std::str::FromStr;
+use std::fs;
+//use std::fs::File;
+//use std::io::Read;
+//use std::path::Path;
 
 #[derive(Serialize)]
 struct TimeData {
@@ -28,9 +32,10 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
     let tid: u64 = taskIdStr.parse().unwrap();
 
-    let content = tasks::read_file(format!("data/task{}.json", taskIdStr));
+    let file_path = format!("data/task{}.json", taskIdStr);
+    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
-    let m = serde_json::from_str(content);
+    let m = serde_json::from_str(&contents);
     m.get("project_id");
 
     let post_data = TimeData {
