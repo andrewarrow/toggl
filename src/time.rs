@@ -10,6 +10,7 @@ use std::fs;
 //use std::path::Path;
 use serde_json::Value;
 //use std::collections::HashMap;
+//use super::tasks;
 
 #[derive(Serialize)]
 struct TimeData {
@@ -39,7 +40,7 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
 
     let result: Result<Value, serde_json::Error> = serde_json::from_str(&contents);
 
-    let m = serde_json::from_str(&contents);
+    //let m: tasks::Task = serde_json::from_str(&contents).unwrap();
 
     let m: Value = match result {
         Ok(value) => value,
