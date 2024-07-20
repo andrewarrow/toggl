@@ -10,6 +10,7 @@ pub struct Task {
     workspace_id: u64,
     project_id: u64,
     project_name: String,
+    project_name_lower: String,
     client_name: String,
 }
 
@@ -31,7 +32,7 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
 
         for task in tasks {
             tasks_by_project
-                .entry(task.project_name.clone())
+                .entry(task.project_name_lower.clone())
                 .or_insert_with(Vec::new)
                 .push(task);
         }
