@@ -1,6 +1,7 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::env;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -57,7 +58,7 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     let cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE must be set");
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert("Content-Type", "application/json".parse().unwrap());
-    headers.insert("Cookie", cookies);
+    headers.insert("Cookie", cookie.parse().unwrap());
 
     client
         .post(url)

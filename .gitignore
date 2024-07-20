@@ -3,3 +3,4 @@ orig_*
 Cargo.lock
 target
 toggl-cli
+data

@@ -1,9 +1,11 @@
 use reqwest::header::{CONTENT_TYPE, COOKIE};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
+use std::fs::File;
+use std::io::prelude::*;
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
     id: u64,
     name: String,
@@ -11,6 +13,7 @@ pub struct Task {
     project_id: u64,
     project_name: String,
     client_name: String,
+    project_color: String,
 }
 
 pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::error::Error>> {
@@ -30,12 +33,18 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
         let tasks: Vec<Task> = response.json().await?;
 
         for task in tasks {
+            let serialized_task = serde_json::to_string(&task)?;
+            println!("{}", serialized_task);
+            let filename = format!("data/task{}.json", task.id);
+            write_to_file(&filename, &serialized_task);
+
             let t = Task {
                 project_name: format!("{} ({})", task.project_name, task.client_name),
                 id: task.id,
                 name: task.name,
                 workspace_id: task.workspace_id,
                 project_id: task.project_id,
+                project_color: task.project_color,
                 client_name: task.client_name,
             };
 
@@ -66,4 +75,10 @@ pub fn search_tasks<'a>(
         }
     }
     results
+}
+
+async fn write_to_file(filename: &str, content: &str) -> std::io::Result<()> {
+    let mut file = File::create(filename)?;
+    file.write_all(content.as_bytes())?;
+    Ok(())
 }
