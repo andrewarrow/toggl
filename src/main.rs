@@ -3,8 +3,8 @@ use clap::{Parser, Subcommand};
 use std::env;
 use tokio::time::{sleep, Duration};
 mod tasks;
-use chrono::NaiveDate;
-use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike};
+use chrono::NaiveDateTime;
+use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike, Utc};
 use std::str::FromStr;
 
 #[tokio::main]
@@ -66,14 +66,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     if timeTxt.trim().is_empty() == false {
-        println!("");
-
         let input_string = timeTxt.to_string();
         let input: &str = &input_string;
-        match NaiveDate::parse_from_str(input, "%Y-%m-%d") {
-            Ok(date) => println!("Parsed date: {}", date),
-            Err(e) => eprintln!("Failed to parse date: {}", e),
-        }
+        let naive_datetime = match NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M") {
+            Ok(dt) => dt,
+            Err(e) => {
+                eprintln!("Failed to parse date and time: {}", e);
+                return Ok(());
+            }
+        };
+
+        let datetime_utc = DateTime::<Utc>::from_utc(naive_datetime, Utc);
+        let formatted_date = datetime_utc.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+
+        println!("{}", formatted_date);
     }
 
     Ok(())
