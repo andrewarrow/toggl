@@ -1,7 +1,6 @@
 use serde::Serialize;
 use serde_json::Value;
 use std::env;
-use std::error::Error;
 use std::fs;
 //use super::tasks;
 
@@ -25,15 +24,12 @@ struct TimeData {
 }
 
 pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Response> {
-    let taskIdStr = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
-    let tid: u64 = taskIdStr.parse().unwrap();
+    let task_id_str = env::var("TOGGLE_TASK_ID").expect("TOGGLE_TASK_ID must be set");
+    let tid: u64 = task_id_str.parse().unwrap();
 
-    let file_path = format!("data/task{}.json", taskIdStr);
-    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let contents = fs::read_to_string(format!("data/task{}.json", task_id_str)).expect("Should have been able to read the file");
 
     let result: Result<Value, serde_json::Error> = serde_json::from_str(&contents);
-
-    //let m: tasks::Task = serde_json::from_str(&contents).unwrap();
 
     let m: Value = match result {
         Ok(value) => value,
@@ -90,8 +86,8 @@ pub async fn post_request(t1: String, t2: String) -> reqwest::Result<reqwest::Re
     println!("{:#?}", post_data);
 
     let client = reqwest::Client::new();
-    //let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
-    let url = "http://localhost:3000";
+    let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
+    //let url = "http://localhost:3000";
 
     let cookie = match env::var("TOGGL_COOKIE") {
         Ok(v) => v,
