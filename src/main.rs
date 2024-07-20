@@ -68,7 +68,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if timeTxt.trim().is_empty() == false {
         let input_string = timeTxt.to_string();
         let input: &str = &input_string;
-        let naive_datetime = match NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M") {
+        let native_datetime = match NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M") {
             Ok(dt) => dt,
             Err(e) => {
                 eprintln!("Failed to parse date and time: {}", e);
@@ -76,10 +76,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         };
 
-        let datetime_utc = DateTime::<Utc>::from_utc(naive_datetime, Utc);
+        let datetime_utc = DateTime::<Utc>::from_utc(native_datetime, Utc);
         let formatted_date = datetime_utc.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
         println!("{}", formatted_date);
+
+        let new_hour = (native_datetime.hour() + 8) % 24;
+        let new_time = native_datetime
+            .with_hour(new_hour)
+            .unwrap_or_else(|| panic!("Invalid hour after adding 8 hours!"));
+        println!("{}", new_time);
     }
 
     Ok(())

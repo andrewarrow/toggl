@@ -30,5 +30,5 @@ cp targets/debug/toggle-cli .
 export TOGGLE_PROJECT_ID=123
 export TOGGLE_WORKSPACE_ID=123
 export TOGGLE_TASK_ID=123
-./toggl-cli --desc='i did a lot for project foo.' --time='2024-07-19'
+./toggl-cli --desc='i did a lot for project foo.' --time='2024-07-19 16:00'
 ```
