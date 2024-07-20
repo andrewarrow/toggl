@@ -8,6 +8,8 @@ use std::fs;
 //use std::fs::File;
 //use std::io::Read;
 //use std::path::Path;
+use serde_json::Value;
+//use std::collections::HashMap;
 
 #[derive(Serialize)]
 struct TimeData {
@@ -35,16 +37,28 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     let file_path = format!("data/task{}.json", taskIdStr);
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
+    let result: Result<Value, serde_json::Error> = serde_json::from_str(&contents);
+
     let m = serde_json::from_str(&contents);
-    m.get("project_id");
+
+    let m: Value = match result {
+        Ok(value) => value,
+        Err(e) => {
+            eprintln!("Error deserializing JSON: {}", e);
+            serde_json::Value::Object(serde_json::Map::new())
+        }
+    };
+
+    let pid: Option<u64> = m.get("project_id").and_then(|v| v.as_u64());
+    let wid: Option<u64> = m.get("workspace_id").and_then(|v| v.as_u64());
 
     let post_data = TimeData {
         created_with: "Snowball".to_string(),
-        pid: m.get("project_id"),
+        pid: pid,
         tid: tid,
         start: "2024-07-18T16:00:00.000Z".to_string(),
         stop: "2024-07-19T00:00:00.000Z".to_string(),
-        wid: m.get("workspace_id"),
+        wid: wid,
         duration: 3600,
         description: "coding".to_string(),
         billable: false,
