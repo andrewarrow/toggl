@@ -14,10 +14,10 @@ Replace (inside the single quotes) the `_gcl_au=ABC123...` stuff with your cooki
 
 # with api key vs cookie
 
-![apiKey](apiKey.png)
+![apiToken](apiToken.png)
 
 ```
-export TOGGL_API_KEY=...
+export TOGGL_API_TOKEN=...
 ```
 
 # building
