@@ -67,41 +67,80 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if timeTxt.trim().is_empty() == false {
         println!("");
 
+        let input = timeTxt;
         let year = 2024;
 
-        let offset = FixedOffset::west(8 * 3600);
-        let parts: Vec<&str> = timeTxt.split_whitespace().collect();
+        let offset = FixedOffset::west(8 * 3600); // PST is UTC-8
+
+        let parts: Vec<&str> = input.split_whitespace().collect();
+        if parts.len() < 3 {
+            eprintln!("Invalid input format.");
+            return Ok(());
+        }
 
         let date_str = format!("{} {}", parts[0], parts[1]); // "Jul 19"
         let time_range_str = parts[2]; // "9-5"
+        eprintln!("Date string: {}, Time range: {}", date_str, time_range_str);
 
-        let date = DateTime::parse_from_str(&format!("{} {}", date_str, year), "%b %d %Y").unwrap();
+        let date_str_with_year = format!("{} {}", date_str, year); // "Jul 19 2024"
+        let date = match DateTime::parse_from_str(&date_str_with_year, "%b %d %Y") {
+            Ok(d) => d,
+            Err(e) => {
+                eprintln!("Failed to parse date: {}", e);
+                return Ok(());
+            }
+        };
 
         let time_range_parts: Vec<&str> = time_range_str.split('-').collect();
-        let start_hour: u32 = time_range_parts[0].parse().unwrap();
-        let end_hour: u32 = time_range_parts[1].parse().unwrap();
-        let start_time = date
+        if time_range_parts.len() != 2 {
+            eprintln!("Invalid time range format.");
+            return Ok(());
+        }
+
+        let start_hour: u32 = match time_range_parts[0].parse() {
+            Ok(h) => h,
+            Err(e) => {
+                eprintln!("Failed to parse start hour: {}", e);
+                return Ok(());
+            }
+        };
+
+        let end_hour: u32 = match time_range_parts[1].parse() {
+            Ok(h) => h,
+            Err(e) => {
+                eprintln!("Failed to parse end hour: {}", e);
+                return Ok(());
+            }
+        };
+
+        let start_time = match date
             .with_hour(start_hour)
-            .unwrap()
-            .with_minute(0)
-            .unwrap()
-            .with_second(0)
-            .unwrap()
-            .with_nanosecond(0)
-            .unwrap();
-        let end_time = date
+            .and_then(|t| t.with_minute(0))
+            .and_then(|t| t.with_second(0))
+            .and_then(|t| t.with_nanosecond(0))
+        {
+            Some(t) => t,
+            None => {
+                eprintln!("Failed to create start time.");
+                return Ok(());
+            }
+        };
+
+        let end_time = match date
             .with_hour(end_hour)
-            .unwrap()
-            .with_minute(0)
-            .unwrap()
-            .with_second(0)
-            .unwrap()
-            .with_nanosecond(0)
-            .unwrap();
+            .and_then(|t| t.with_minute(0))
+            .and_then(|t| t.with_second(0))
+            .and_then(|t| t.with_nanosecond(0))
+        {
+            Some(t) => t,
+            None => {
+                eprintln!("Failed to create end time.");
+                return Ok(());
+            }
+        };
 
         let start_time_pst = start_time.with_timezone(&offset);
         let end_time_pst = end_time.with_timezone(&offset);
-
         println!("Start Time: {}", start_time_pst);
         println!("End Time: {}", end_time_pst);
     }
