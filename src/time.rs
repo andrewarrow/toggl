@@ -106,8 +106,8 @@ pub async fn post_request(
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert("Content-Type", "application/json".parse().unwrap());
     if cookie.is_empty() {
-        let basic = format!("{}:api_token", token);
-        headers.insert("Authorization: Basic", basic.parse().unwrap());
+        let basic = format!("Basic {}:api_token", token);
+        headers.insert("Authorization", basic.parse().unwrap());
     } else {
         headers.insert("Cookie", cookie.parse().unwrap());
     }
