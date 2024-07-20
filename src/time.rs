@@ -64,8 +64,16 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         Some(id) => id,
         None => "",
     };
-    //project_color: m.get("project_color"),
-    //client_name: m.get("client_name"),
+    let project_color: Option<&str> = m.get("project_color").and_then(|v| v.as_str());
+    let project_color = match project_color {
+        Some(id) => id,
+        None => "",
+    };
+    let client_name: Option<&str> = m.get("client_name").and_then(|v| v.as_str());
+    let client_name = match client_name {
+        Some(id) => id,
+        None => "",
+    };
 
     let post_data = TimeData {
         created_with: "Snowball".to_string(),
@@ -79,9 +87,9 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
         billable: false,
         tags: vec![],
         project_name: project_name.to_string(),
-        project_color: m.get("project_color"),
+        project_color: project_color.to_string(),
         project_active: true,
-        client_name: m.get("client_name"),
+        client_name: client_name.to_string(),
         project_billable: false,
     };
 
