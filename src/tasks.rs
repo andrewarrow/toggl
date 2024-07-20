@@ -34,8 +34,8 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
 
         for task in tasks {
             let serialized_task = serde_json::to_string(&task)?;
+            let filename = format!("./data/task{}.json", task.id);
             println!("{}", serialized_task);
-            let filename = format!("data/task{}.json", task.id);
             write_to_file(&filename, &serialized_task);
 
             let t = Task {

@@ -63,7 +63,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let search_results = tasks::search_tasks(&tasks_by_project, query);
 
         for task in search_results {
-            println!("{:#?}", task);
+            //println!("{:#?}", task);
         }
     }
     if timeTxt.trim().is_empty() == false {
