@@ -43,10 +43,12 @@ pub async fn post_request() -> reqwest::Result<reqwest::Response> {
     };
 
     let client = reqwest::Client::new();
-    let url = "https://example.com/api/endpoint";
+    let url = "https://track.toggl.com/api/v9/time_entries?meta=true";
 
+    let cookie = env::var("TOGGL_COOKIE").expect("TOGGL_COOKIE must be set");
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert("Content-Type", "application/json".parse().unwrap());
+    headers.insert("Cookie", cookies);
 
     client
         .post(url)
