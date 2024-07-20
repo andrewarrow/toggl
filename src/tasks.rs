@@ -38,10 +38,8 @@ pub async fn fetch_tasks() -> Result<HashMap<String, Vec<Task>>, Box<dyn std::er
 
         for task in tasks {
             let serialized_task = serde_json::to_string(&task)?;
-            let filename = format!("/Users/aa/os/toggl/data/task{}.json", task.id);
-            println!("1");
+            let filename = format!("data/task{}.json", task.id);
             if let Err(e) = write_to_file(&filename, &serialized_task).await {}
-            println!("2");
 
             let t = Task {
                 project_name: format!("{} ({})", task.project_name, task.client_name),
