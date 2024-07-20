@@ -1,7 +1,6 @@
 use clap::{Arg, Command};
 mod tasks;
-use chrono::NaiveDateTime;
-use chrono::{DateTime, Timelike, Utc};
+use chrono::{DateTime, NaiveDateTime, Timelike, Utc};
 mod time;
 use std::fs;
 
@@ -52,7 +51,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if queryCap.trim().is_empty() == false {
-        fs::create_dir("data")?;
+        fs::create_dir("data");
         let query_lower = queryCap.to_lowercase();
         let query: &str = &query_lower;
 
